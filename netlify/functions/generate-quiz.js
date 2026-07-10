@@ -36,7 +36,7 @@ Output Constraints:
                 'API-KEY': process.env.ONEMIN_AI_KEY,
                 'Content-Type': 'application/json'
             },
-            timeout: 10000 
+            timeout: 25000 
         });
 
         // Extracting text from 1Min AI's current nested data response structure
