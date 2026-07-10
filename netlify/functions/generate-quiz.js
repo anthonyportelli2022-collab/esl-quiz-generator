@@ -24,32 +24,31 @@ Output Constraints:
   ]
 }`;
 
-        // Connects to the 1Min AI feature node
-        const response = await axios.post('https://api.1min.ai/api/features', {
-            type: "CHAT_WITH_AI",
+        // Using 1Min AI's current unified chat endpoint and feature type
+        const response = await axios.post('https://api.1min.ai/api/chat-with-ai?isStreaming=false', {
+            type: "UNIFY_CHAT_WITH_AI",
             model: "gpt-4o-mini",
             promptObject: {
-                prompt: promptText,
-                isMixed: false,
-                imageList: [],
-                webSearch: false
+                prompt: promptText
             }
         }, {
             headers: {
                 'API-KEY': process.env.ONEMIN_AI_KEY,
                 'Content-Type': 'application/json'
             },
-            timeout: 10000 // Prevents hanging endlessly
+            timeout: 10000 
         });
+
+        // Extracting text from 1Min AI's current nested data response structure
+        const aiResponseText = response.data?.aiRecord?.aiRecordDetail?.resultObject?.[0] || response.data?.content;
 
         return {
             statusCode: 200,
             headers: { "Content-Type": "application/json" },
-            body: response.data.content
+            body: aiResponseText
         };
 
     } catch (error) {
-        // Built-in diagnostics to capture exact issues
         const errorData = error.response ? JSON.stringify(error.response.data) : error.message;
         return {
             statusCode: 500,
